@@ -6,6 +6,7 @@
 // ------------------------------------------------------------------------
 module game_array (
     input Clk, 
+    input Ack, 
     input Start, 
     input Reset, 
     input bottom_flag, 
@@ -33,7 +34,7 @@ LOST = 5'b10000, CLEAR = 5'b01000, MOVE = 5'b00100, BLOCKGEN = 5'b00010, INI = 5
 
 always @(posedge Clk, posedge Reset) 
 
-  begin  : CU_n_DU
+  begin 
     if (Reset)
        begin
             state <= INI;
@@ -190,6 +191,11 @@ always @(posedge Clk, posedge Reset)
                 begin
                     state <= BLOCKGEN;
                 end
+              end
+            LOST :
+              begin
+                if (Ack)
+                    state <= INI;
               end
       endcase
     end 
