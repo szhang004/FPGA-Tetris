@@ -35,6 +35,7 @@ assign {q_blockgen, q_move, q_wait, q_ini} = state;
 reg [3:0] center_x;
 reg [3:0] center_y;
 reg [1:0] clk_count;
+reg [3:0] x1_check, y1_check, x2_check, y2_check, x3_check, y3_check, x4_check, y4_check;
 
 localparam
 BLOCKGEN = 4'b1000, MOVE = 4'b0100, WAIT = 4'b0010, INI = 4'b0001;
@@ -96,6 +97,15 @@ always @(posedge Clk, posedge Reset)
 
             MOVE :
               begin
+                x1_check <= x1;
+                y1_check <= y1 -1;
+                x2_check <= x2;
+                y2_check <= y2 -1;
+                x3_check <= x3;
+                y3_check <= y3 -1;
+                x4_check <= x4;
+                y4_check <= y4 -1;
+
                 if (SCEN_U) // rotate
                 begin
                     if (center_x < 8 && center_x > 1)
@@ -110,6 +120,7 @@ always @(posedge Clk, posedge Reset)
                         x4 <= center_y + x4 - center_x;
                     end
                 end
+
                 if (SCEN_R)  // move right
                 begin
                     if (x1 != 9 & x2 != 9 & x3 != 9 & x4 != 9)
@@ -121,6 +132,7 @@ always @(posedge Clk, posedge Reset)
                         center_x <= center_x + 1;
                     end
                 end
+
                 if (SCEN_L)  // move left
                 begin
                     if (x1 != 0 & x2 != 0 & x3 != 0 & x4 != 0)
@@ -132,17 +144,18 @@ always @(posedge Clk, posedge Reset)
                         center_x <= center_x - 1;
                     end
                 end
-                if (SCEN_D) // drop
-                begin
-                    
-                end 
+
+                // if (SCEN_D) // drop
+                // begin
+
+                // end 
 
                 clk_count <= clk_count + 1;
+
                 if (clk_count == 3)
                 begin
                     clk_count = 0;
-                    if (y1 == 0 || y2 == 0 || y3 == 0 || y4 == 0 || 
-                        arr[x1][y1-1] == 1 || arr[x2][y2-1] == 1 || arr[x3][y3-1] == 1 || arr[x4][y4-1] == 1)
+                    if (y1 == 0 || y2 == 0 || y3 == 0 || y4 == 0)
                     begin
                         if (y1 == 11 || y2 == 11 || y3 == 11 || y4 == 11)
                             top_flag <= 1;
@@ -150,6 +163,12 @@ always @(posedge Clk, posedge Reset)
                     end
                     else
                     begin
+                        if (arr[x1_check][y1_check] == 1 || arr[x2_check][y2_check] == 1 || arr[x3_check][y3_check] == 1 || arr[x4_check][y4_check] == 1)
+                        begin
+                            if (y1 == 11 || y2 == 11 || y3 == 11 || y4 == 11)
+                                top_flag <= 1;
+                            state <= WAIT;
+                        end
                         y1 <= y1 - 1;
                         y2 <= y2 - 1;
                         y3 <= y3 - 1;
