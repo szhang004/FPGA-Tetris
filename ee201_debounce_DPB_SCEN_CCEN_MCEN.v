@@ -87,7 +87,7 @@
 --  combine these clocks based on which part of the state machine you are currently travelling at. 
    --------------------------------------------------------------------------------*/
 
-module ee201_debouncer(CLK, RESET, PB, DPB, SCEN, MCEN, CCEN);
+module ee354_debouncer(CLK, RESET, PB, DPB, SCEN, MCEN, CCEN);
 
 //inputs
 input	CLK, RESET;

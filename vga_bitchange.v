@@ -89,7 +89,7 @@ module vga_bitchange(
 	begin
 		if (square0[0]  && arr[0][0])
 			rgb = LIGHT_GREY;
-		else if (ssquare1[0]  && arr[0][1])
+		else if (square1[0]  && arr[0][1])
 			rgb = LIGHT_GREY;
 		else if (square2[0]  && arr[0][2])
 			rgb = LIGHT_GREY;

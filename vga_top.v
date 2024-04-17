@@ -39,12 +39,12 @@ module vga_top(
 	// CLOCKING 
 
 	wire		Reset;
-	wire		board_clk, game_clk;
+	wire		game_clk;
 	reg [26:0]	DIV_CLK;
 
-	BUFGP BUFGP1 (board_clk, ClkPort);
+	//BUFGP BUFGP1 (board_clk, ClkPort);
 
-	always @(posedge board_clk, posedge Reset) 	
+	always @(posedge ClkPort, posedge Reset) 	
 	begin							
 		if (Reset)
 		DIV_CLK <= 0;

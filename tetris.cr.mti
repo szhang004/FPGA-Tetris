@@ -1,0 +1,8 @@
+Z:/VMWare/tetris/FPGA-Tetris/display_controller.v {1 {vlog -work work -vopt -stats=none Z:/VMWare/tetris/FPGA-Tetris/display_controller.v
+QuestaSim-64 vlog 10.6a Compiler 2017.03 Mar 16 2017
+-- Compiling module display_controller
+
+Top level modules:
+	display_controller
+
+} {} {}}

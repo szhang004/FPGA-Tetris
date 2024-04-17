@@ -1,0 +1,175 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dZ:/VMWare/tetris/FPGA-Tetris
+vblock_gen
+!s110 1713286221
+!i10b 1
+!s100 M`RZ>C0f=nXc9ELj``fIE2
+INBTXB]e`Ed_3Y;lcc[8;B0
+Z1 VDg1SIo80bB@j0V0VzS_@n1
+R0
+w1713107235
+8Z:/VMWare/tetris/FPGA-Tetris/block_gen.v
+FZ:/VMWare/tetris/FPGA-Tetris/block_gen.v
+L0 7
+Z2 OL;L;10.6a;65
+r1
+!s85 0
+31
+!s108 1713286217.000000
+!s107 Z:/VMWare/tetris/FPGA-Tetris/block_gen.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|Z:/VMWare/tetris/FPGA-Tetris/block_gen.v|
+!i113 0
+Z3 o-work work -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z4 tCvgOpt 0
+vdisplay_controller
+!s110 1713286225
+!i10b 1
+!s100 0^[SEMV1cig0d5M[MJS:l3
+IgZ>XidP0L<BSJ2F:>YY3d1
+R1
+R0
+w1712875359
+8Z:/VMWare/tetris/FPGA-Tetris/display_controller.v
+FZ:/VMWare/tetris/FPGA-Tetris/display_controller.v
+Z5 L0 24
+R2
+r1
+!s85 0
+31
+!s108 1713286223.000000
+!s107 Z:/VMWare/tetris/FPGA-Tetris/display_controller.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|Z:/VMWare/tetris/FPGA-Tetris/display_controller.v|
+!i113 0
+R3
+R4
+vgame_array
+!s110 1713286214
+!i10b 1
+!s100 8_2ZHBgD4aFz2WAiXgZl40
+IITCinTNWm95Fgc0>@oG<L2
+R1
+R0
+w1713206672
+8Z:/VMWare/tetris/FPGA-Tetris/game_array.v
+FZ:/VMWare/tetris/FPGA-Tetris/game_array.v
+L0 7
+R2
+r1
+!s85 0
+31
+!s108 1713286209.000000
+!s107 Z:/VMWare/tetris/FPGA-Tetris/game_array.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|Z:/VMWare/tetris/FPGA-Tetris/game_array.v|
+!i113 0
+R3
+R4
+vreg_chain
+R1
+r1
+!s85 0
+31
+!i10b 1
+!s100 [AR[@ak@Q9jhb7XE>mh4C1
+IKk8jn3DBLJlnEe3Rd?Yf>3
+R0
+Z6 w1712943618
+Z7 8Z:/VMWare/tetris/FPGA-Tetris/shift_register.v
+Z8 FZ:/VMWare/tetris/FPGA-Tetris/shift_register.v
+L0 25
+R2
+Z9 !s108 1712947597.000000
+Z10 !s107 Z:/VMWare/tetris/FPGA-Tetris/shift_register.v|
+Z11 !s90 -reportprogress|300|+acc|Z:/VMWare/tetris/FPGA-Tetris/shift_register.v|
+!i113 0
+Z12 o+acc -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R4
+vshift_reg
+R1
+r1
+!s85 0
+31
+!i10b 1
+!s100 `0IYjHR:]>aVK6`hbT`c51
+INaE8]H7gK[3cmCX1c`:gG3
+R0
+R6
+R7
+R8
+L0 2
+R2
+R9
+R10
+R11
+!i113 0
+R12
+R4
+vshift_reg_tb
+R1
+r1
+!s85 0
+31
+!i10b 1
+!s100 HEHFoPPZPjoQFiG1OM4CK2
+IaD3K:ZETW4575g]jU^2:12
+R0
+w1712947580
+8Z:/VMWare/tetris/FPGA-Tetris/shift_reg_tb.v
+FZ:/VMWare/tetris/FPGA-Tetris/shift_reg_tb.v
+L0 127
+R2
+!s108 1712947602.000000
+!s107 Z:/VMWare/tetris/FPGA-Tetris/shift_reg_tb.v|
+!s90 -reportprogress|300|+acc|Z:/VMWare/tetris/FPGA-Tetris/shift_reg_tb.v|
+!i113 0
+R12
+R4
+vvga_bitchange
+!s110 1713287384
+!i10b 1
+!s100 `9haLPKo0NQ_Z3FYMYMiP1
+IKYK;^zX<G484lKkOEQZaN0
+R1
+R0
+w1713287373
+8Z:/VMWare/tetris/FPGA-Tetris/vga_bitchange.v
+FZ:/VMWare/tetris/FPGA-Tetris/vga_bitchange.v
+L0 29
+R2
+r1
+!s85 0
+31
+!s108 1713287382.000000
+!s107 Z:/VMWare/tetris/FPGA-Tetris/vga_bitchange.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|Z:/VMWare/tetris/FPGA-Tetris/vga_bitchange.v|
+!i113 0
+R3
+R4
+vvga_top
+!s110 1713287679
+!i10b 1
+!s100 WiG`=cbU1H28_zfQSRXId0
+I4=YlN:5Djom1?:S0QbK0E2
+R1
+R0
+w1713287669
+8Z:/VMWare/tetris/FPGA-Tetris/vga_top.v
+FZ:/VMWare/tetris/FPGA-Tetris/vga_top.v
+R5
+R2
+r1
+!s85 0
+31
+!s108 1713287675.000000
+!s107 Z:/VMWare/tetris/FPGA-Tetris/vga_top.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|Z:/VMWare/tetris/FPGA-Tetris/vga_top.v|
+!i113 0
+R3
+R4
