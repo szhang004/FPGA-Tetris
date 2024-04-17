@@ -45,12 +45,12 @@ module vga_top(
 	BUFGP BUFGP1 (board_clk, ClkPort);
 
 	always @(posedge board_clk, posedge Reset) 	
-    begin							
-        if (Reset)
+	begin							
+		if (Reset)
 		DIV_CLK <= 0;
-        else
+		else
 		DIV_CLK <= DIV_CLK + 1'b1;
-    end
+	end
 
 	assign game_clk = DIV_CLK[20];
 
@@ -72,7 +72,18 @@ module vga_top(
 	assign Start_Ack = BtnU;
 
 	wire x1,y1,x2,y2,x3,y3,x4,y4;
-	reg [9:0][11:0] arr;
+	wire [9:0] arr0;
+	wire [9:0] arr1;
+	wire [9:0] arr2;
+	wire [9:0] arr3;
+	wire [9:0] arr4;
+	wire [9:0] arr5;
+	wire [9:0] arr6;
+	wire [9:0] arr7;
+	wire [9:0] arr8;
+	wire [9:0] arr9;
+	wire [9:0] arr10;
+	wire [9:0] arr11;
 
 	display_controller dc(.clk(ClkPort), .hSync(hSync), .vSync(vSync), .bright(bright), .hCount(hc), .vCount(vc));
 	vga_bitchange vbc(.Clk(ClkPort), .hCount(hc), .vCount(vc), .arr(arr), .rgb(rgb));
@@ -88,19 +99,19 @@ module vga_top(
 	assign vgaB = rgb[3  : 0];
 
 	ee354_debouncer #(.N_dc(28)) button_U 
-        (.CLK(sys_clk), .RESET(Reset), .PB(BtnU), .DPB( ), 
+        (.CLK(ClkPort), .RESET(Reset), .PB(BtnU), .DPB( ), 
 		.SCEN(BtnU_pulse), .MCEN( ), .CCEN( ));
 
 	ee354_debouncer #(.N_dc(28)) button_D 
-        (.CLK(sys_clk), .RESET(Reset), .PB(BtnD), .DPB( ), 
+        (.CLK(ClkPort), .RESET(Reset), .PB(BtnD), .DPB( ), 
 		.SCEN(BtnD_pulse), .MCEN( ), .CCEN( ));
 	
 	ee354_debouncer #(.N_dc(28)) button_L 
-        (.CLK(sys_clk), .RESET(Reset), .PB(BtnL), .DPB( ), 
+        (.CLK(ClkPort), .RESET(Reset), .PB(BtnL), .DPB( ), 
 		.SCEN(BtnL_pulse), .MCEN( ), .CCEN( ));
 
 	ee354_debouncer #(.N_dc(28)) button_R
-        (.CLK(sys_clk), .RESET(Reset), .PB(BtnR), .DPB( ), 
+        (.CLK(ClkPort), .RESET(Reset), .PB(BtnR), .DPB( ), 
 		.SCEN(BtnR_pulse), .MCEN( ), .CCEN( ));
 
 	game_array game_space(
@@ -118,8 +129,19 @@ module vga_top(
 		.y3(y3),
 		.x4(x4),
 		.y4(y4),
+		.arr0(arr0), 
+		.arr1(arr1), 
+		.arr2(arr2), 
+    	.arr3(arr3), 
+    	.arr4(arr4), 
+    	.arr5(arr5), 
+    	.arr6(arr6), 
+    	.arr7(arr7), 
+    	.arr8(arr8), 
+    	.arr9(arr9), 
+    	.arr10(arr10), 
+    	.arr11(arr11), 
 		.gen_flag(gen_flag), 
-		.arr(arr),  
 		.score(score)
 	);
 
@@ -132,7 +154,18 @@ module vga_top(
 		.SCEN_D(BtnD_pulse), 
 		.SCEN_L(BtnL_pulse), 
 		.SCEN_R(BtnR_pulse),
-		.arr(arr), 
+		.arr0(arr0), 
+		.arr1(arr1), 
+		.arr2(arr2), 
+    	.arr3(arr3), 
+    	.arr4(arr4), 
+    	.arr5(arr5), 
+    	.arr6(arr6), 
+    	.arr7(arr7), 
+    	.arr8(arr8), 
+    	.arr9(arr9), 
+    	.arr10(arr10), 
+    	.arr11(arr11), 
 		.bottom_flag(bottom_flag), 
 		.top_flag(top_flag), 
 		.x1(x1),

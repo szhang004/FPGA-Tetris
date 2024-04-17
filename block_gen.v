@@ -14,7 +14,18 @@ module block_gen
     input SCEN_D,
     input SCEN_L,
     input SCEN_R,
-    input [9:0][11:0] arr, 
+    input [9:0] arr0,
+    input [9:0] arr1,
+    input [9:0] arr2,
+    input [9:0] arr3,
+    input [9:0] arr4,
+    input [9:0] arr5,
+    input [9:0] arr6,
+    input [9:0] arr7, 
+    input [9:0] arr8,
+    input [9:0] arr9,
+    input [9:0] arr10,
+    input [9:0] arr11,
     output bottom_flag, 
     output reg top_flag, 
     output reg [3:0] x1,
@@ -35,7 +46,7 @@ assign {q_blockgen, q_move, q_wait, q_ini} = state;
 reg [3:0] center_x;
 reg [3:0] center_y;
 reg [1:0] clk_count;
-reg [3:0] x1_check, y1_check, x2_check, y2_check, x3_check, y3_check, x4_check, y4_check;
+reg [9:0] arr [11:0];
 
 localparam
 BLOCKGEN = 4'b1000, MOVE = 4'b0100, WAIT = 4'b0010, INI = 4'b0001;
@@ -47,6 +58,26 @@ integer T = 4;
 integer shape;
 
 assign bottom_flag = (state == WAIT);
+
+integer i;
+always @(*)
+begin
+  for(i = 0; i < 10; i = i + 1)
+		begin
+        arr[0][i] <= arr0[i];
+        arr[1][i] <= arr1[i];
+        arr[2][i] <= arr2[i];
+        arr[3][i] <= arr3[i];
+        arr[4][i] <= arr4[i];
+        arr[5][i] <= arr5[i];
+        arr[6][i] <= arr6[i];
+        arr[7][i] <= arr7[i];
+        arr[8][i] <= arr8[i];
+        arr[9][i] <= arr9[i];
+        arr[10][i] <= arr10[i];
+        arr[11][i] <= arr11[i];
+    end
+end
 
 always @(posedge Clk, posedge Reset) 
 
@@ -97,14 +128,6 @@ always @(posedge Clk, posedge Reset)
 
             MOVE :
               begin
-                x1_check <= x1;
-                y1_check <= y1 -1;
-                x2_check <= x2;
-                y2_check <= y2 -1;
-                x3_check <= x3;
-                y3_check <= y3 -1;
-                x4_check <= x4;
-                y4_check <= y4 -1;
 
                 if (SCEN_U) // rotate
                 begin
@@ -163,7 +186,7 @@ always @(posedge Clk, posedge Reset)
                     end
                     else
                     begin
-                        if (arr[x1_check][y1_check] == 1 || arr[x2_check][y2_check] == 1 || arr[x3_check][y3_check] == 1 || arr[x4_check][y4_check] == 1)
+                        if (arr[x1][y1-1] == 1 || arr[x2][y2-1] == 1 || arr[x3][y3-1] == 1 || arr[x4][y4-1] == 1)
                         begin
                             if (y1 == 11 || y2 == 11 || y3 == 11 || y4 == 11)
                                 top_flag <= 1;
