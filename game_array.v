@@ -47,21 +47,18 @@ assign {q_lost, q_clear, q_move, q_blockgen, q_ini} = state;
 integer i;
 always @(*)
 begin
-  for(i = 0; i < 10; i = i + 1)
-		begin
-        arr[0][i] <= arr0[i];
-        arr[1][i] <= arr1[i];
-        arr[2][i] <= arr2[i];
-        arr[3][i] <= arr3[i];
-        arr[4][i] <= arr4[i];
-        arr[5][i] <= arr5[i];
-        arr[6][i] <= arr6[i];
-        arr[7][i] <= arr7[i];
-        arr[8][i] <= arr8[i];
-        arr[9][i] <= arr9[i];
-        arr[10][i] <= arr10[i];
-        arr[11][i] <= arr11[i];
-    end
+    arr0 <= arr[0];
+    arr1 <= arr[1];
+    arr2 <= arr[2];
+    arr3 <= arr[3];
+    arr4 <= arr[4];
+    arr5 <= arr[5];
+    arr6 <= arr[6];
+    arr7 <= arr[7];
+    arr8 <= arr[8];
+    arr9 <= arr[9];
+    arr10 <= arr[10];
+    arr11 <= arr[11];
 end
 
 localparam
@@ -87,7 +84,11 @@ always @(posedge Clk, posedge Reset)
                     state <= BLOCKGEN;
 
                   score <= 0;
-                  arr <= {0};
+
+                  for(i = 0; i < 12; i = i + 1)
+                  begin
+                    arr[i] <= 10'd0000000000;
+                  end
               end
             BLOCKGEN :
               begin

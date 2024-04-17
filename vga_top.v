@@ -52,7 +52,7 @@ module vga_top(
 		DIV_CLK <= DIV_CLK + 1'b1;
 	end
 
-	assign game_clk = DIV_CLK[20];
+	assign game_clk = DIV_CLK[22];
 
 
 	// disable mamory ports
@@ -86,7 +86,23 @@ module vga_top(
 	wire [9:0] arr11;
 
 	display_controller dc(.clk(ClkPort), .hSync(hSync), .vSync(vSync), .bright(bright), .hCount(hc), .vCount(vc));
-	vga_bitchange vbc(.Clk(ClkPort), .hCount(hc), .vCount(vc), .arr(arr), .rgb(rgb));
+	vga_bitchange vbc(
+		.Clk(ClkPort), 
+		.hCount(hc), 
+		.vCount(vc), 
+		.rgb(rgb),
+		.arr0(arr0), 
+		.arr1(arr1), 
+		.arr2(arr2), 
+    	.arr3(arr3), 
+    	.arr4(arr4), 
+    	.arr5(arr5), 
+    	.arr6(arr6), 
+    	.arr7(arr7), 
+    	.arr8(arr8), 
+    	.arr9(arr9), 
+    	.arr10(arr10), 
+    	.arr11(arr11));
 	// counter cnt(.clk(ClkPort), .displayNumber(score), .anode(anode), .ssdOut(ssdOut));
 	
 	// assign Dp = 1;
