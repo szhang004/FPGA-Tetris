@@ -33,7 +33,7 @@ module vga_top(
 	// output An0, An1, An2, An3, An4, An5, An6, An7,
 	// output Ca, Cb, Cc, Cd, Ce, Cf, Cg, Dp,
 	
-	output QuadSpiFlashCS
+	output MemOE, MemWR, RamCS, QuadSpiFlashCS
 	);
 	
 	// CLOCKING 
@@ -56,7 +56,7 @@ module vga_top(
 
 
 	// disable mamory ports
-	// assign {MemOE, MemWR, RamCS, QuadSpiFlashCS} = 4'b1111;
+	assign {MemOE, MemWR, RamCS, QuadSpiFlashCS} = 4'b1111;
 
 	wire bright;
 	wire[9:0] hc, vc;
@@ -193,6 +193,6 @@ module vga_top(
 		.x4(x4),
 		.y4(y4));
 
-	assign QuadSpiFlashCS = 1'b1;
+	// assign QuadSpiFlashCS = 1'b1;
 
 endmodule
