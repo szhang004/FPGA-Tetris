@@ -59,6 +59,12 @@ set_property PACKAGE_PIN N17 [get_ports BtnC]
 set_property PACKAGE_PIN M18 [get_ports BtnU] 
 	set_property IOSTANDARD LVCMOS33 [get_ports BtnU]
 
+set_property PACKAGE_PIN N17 [get_ports BtnL] 
+	set_property IOSTANDARD LVCMOS33 [get_ports BtnL]
+
+set_property PACKAGE_PIN M18 [get_ports BtnR] 
+	set_property IOSTANDARD LVCMOS33 [get_ports BtnR]
+
 set_property PACKAGE_PIN A3 [get_ports {vgaR[0]}]				
 	set_property IOSTANDARD LVCMOS33 [get_ports {vgaR[0]}]
 
@@ -113,3 +119,5 @@ set_property PACKAGE_PIN H14 [get_ports MemOE]
 set_property PACKAGE_PIN R11 [get_ports MemWR]					
 	set_property IOSTANDARD LVCMOS33 [get_ports MemWR]
 
+set_property CFGBVS VCCO [current_design]  # Set to VCCO or GND based on your design requirements
+set_property CONFIG_VOLTAGE 3.3 [current_design]  # Set this to the voltage provided to configuration bank 0
