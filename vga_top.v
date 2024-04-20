@@ -52,7 +52,7 @@ module vga_top(
 		DIV_CLK <= DIV_CLK + 1'b1;
 	end
 
-	assign game_clk = DIV_CLK[22];
+	assign game_clk = DIV_CLK[23];
 
 
 	// disable mamory ports
@@ -60,18 +60,16 @@ module vga_top(
 
 	wire bright;
 	wire[9:0] hc, vc;
-	wire[15:0] score;
-	// wire [6:0] ssdOut;
-	// wire [3:0] anode;
+	wire[15:0] score;	
 	wire [11:0] rgb;
 
 	wire Start_Ack;
-	wire BtnR_pulse, BtnL_pulse, BtnD_pulse, BtnU_pulse;
-	wire bottom_flag, top_flag, gen_flag; 
+	// wire BtnR_pulse, BtnL_pulse, BtnD_pulse, BtnU_pulse;
+	wire bottom_flag, top_flag, gen_flag, move, clear; 
 	assign Reset = BtnC;
 	assign Start_Ack = BtnU;
 
-	wire x1,y1,x2,y2,x3,y3,x4,y4;
+	wire [3:0] x1,y1,x2,y2,x3,y3,x4,y4;
 	wire [9:0] arr0;
 	wire [9:0] arr1;
 	wire [9:0] arr2;
@@ -86,112 +84,48 @@ module vga_top(
 	wire [9:0] arr11;
 
 	display_controller dc(.clk(ClkPort), .hSync(hSync), .vSync(vSync), .bright(bright), .hCount(hc), .vCount(vc));
+	
 	vga_bitchange vbc(
-		.Clk(ClkPort), 
-		.hCount(hc), 
-		.vCount(vc), 
-		.rgb(rgb),
-		.arr0(arr0), 
-		.arr1(arr1), 
-		.arr2(arr2), 
-    	.arr3(arr3), 
-    	.arr4(arr4), 
-    	.arr5(arr5), 
-    	.arr6(arr6), 
-    	.arr7(arr7), 
-    	.arr8(arr8), 
-    	.arr9(arr9), 
-    	.arr10(arr10), 
-    	.arr11(arr11));
-	// counter cnt(.clk(ClkPort), .displayNumber(score), .anode(anode), .ssdOut(ssdOut));
-	
-	// assign Dp = 1;
-	// assign {Ca, Cb, Cc, Cd, Ce, Cf, Cg} = ssdOut[6 : 0];
-    // assign {An7, An6, An5, An4, An3, An2, An1, An0} = {4'b1111, anode};
+		.Clk(ClkPort), .hCount(hc), .vCount(vc), .rgb(rgb), .gen(gen_flag), .move(move), .clear(clear),
+		.arr0(arr0), .arr1(arr1), .arr2(arr2), .arr3(arr3), .arr4(arr4), .arr5(arr5), .arr6(arr6), 
+    	.arr7(arr7), .arr8(arr8), .arr9(arr9), .arr10(arr10), .arr11(arr11), .bright(bright), 
+		.x1(x1), .y1(y1), .x2(x2), .y2(y2), .x3(x3), .y3(y3), .x4(x4), .y4(y4));  
 
-	
 	assign vgaR = rgb[11 : 8];
 	assign vgaG = rgb[7  : 4];
 	assign vgaB = rgb[3  : 0];
 
-	ee354_debouncer #(.N_dc(28)) button_U 
-        (.CLK(ClkPort), .RESET(Reset), .PB(BtnU), .DPB( ), 
-		.SCEN(BtnU_pulse), .MCEN( ), .CCEN( ));
+	// ee354_debouncer #(.N_dc(28)) button_U 
+    //     (.CLK(ClkPort), .RESET(Reset), .PB(BtnU), .DPB( ), 
+	// 	.SCEN(BtnU_pulse), .MCEN( ), .CCEN( ));
 
-	ee354_debouncer #(.N_dc(28)) button_D 
-        (.CLK(ClkPort), .RESET(Reset), .PB(BtnD), .DPB( ), 
-		.SCEN(BtnD_pulse), .MCEN( ), .CCEN( ));
+	// ee354_debouncer #(.N_dc(28)) button_D 
+    //     (.CLK(ClkPort), .RESET(Reset), .PB(BtnD), .DPB( ), 
+	// 	.SCEN(BtnD_pulse), .MCEN( ), .CCEN( ));
 	
-	ee354_debouncer #(.N_dc(28)) button_L 
-        (.CLK(ClkPort), .RESET(Reset), .PB(BtnL), .DPB( ), 
-		.SCEN(BtnL_pulse), .MCEN( ), .CCEN( ));
+	// ee354_debouncer #(.N_dc(28)) button_L 
+    //     (.CLK(ClkPort), .RESET(Reset), .PB(BtnL), .DPB( ), 
+	// 	.SCEN(BtnL_pulse), .MCEN( ), .CCEN( ));
 
-	ee354_debouncer #(.N_dc(28)) button_R
-        (.CLK(ClkPort), .RESET(Reset), .PB(BtnR), .DPB( ), 
-		.SCEN(BtnR_pulse), .MCEN( ), .CCEN( ));
+	// ee354_debouncer #(.N_dc(28)) button_R
+    //     (.CLK(ClkPort), .RESET(Reset), .PB(BtnR), .DPB( ), 
+	// 	.SCEN(BtnR_pulse), .MCEN( ), .CCEN( ));
 
 	game_array game_space(
-		.Clk(game_clk), 
-		.Ack(Start_Ack), 
-		.Start(Start_Ack), 
-		.Reset(Reset), 
-		.bottom_flag(bottom_flag), 
-		.top_flag(top_flag), 
-		.x1(x1),
-		.y1(y1),
-		.x2(x2),
-		.y2(y2),
-		.x3(x3),
-		.y3(y3),
-		.x4(x4),
-		.y4(y4),
-		.arr0(arr0), 
-		.arr1(arr1), 
-		.arr2(arr2), 
-    	.arr3(arr3), 
-    	.arr4(arr4), 
-    	.arr5(arr5), 
-    	.arr6(arr6), 
-    	.arr7(arr7), 
-    	.arr8(arr8), 
-    	.arr9(arr9), 
-    	.arr10(arr10), 
-    	.arr11(arr11), 
-		.gen_flag(gen_flag), 
-		.score(score)
+		.Clk(game_clk), .Ack(Start_Ack), .Start(Start_Ack), .Reset(Reset), .bottom_flag(bottom_flag), 
+		.top_flag(top_flag), .x1(x1), .y1(y1), .x2(x2), .y2(y2), .x3(x3), .y3(y3), .x4(x4), .y4(y4), 
+		.arr0(arr0), .arr1(arr1), .arr2(arr2), .arr3(arr3), .arr4(arr4), .arr5(arr5), .arr6(arr6), 
+    	.arr7(arr7), .arr8(arr8), .arr9(arr9), .arr10(arr10), .arr11(arr11), .gen_flag(gen_flag), 
+		.score(score), .q_move(move), .q_clear(clear)
 	);
 
 	block_gen block(
-		.Clk(game_clk), 
-		.Ack(Start_Ack), 
-		.Reset(Reset), 
-		.gen_flag(gen_flag), 
-		.SCEN_U(BtnU_pulse),
-		.SCEN_D(BtnD_pulse), 
-		.SCEN_L(BtnL_pulse), 
-		.SCEN_R(BtnR_pulse),
-		.arr0(arr0), 
-		.arr1(arr1), 
-		.arr2(arr2), 
-    	.arr3(arr3), 
-    	.arr4(arr4), 
-    	.arr5(arr5), 
-    	.arr6(arr6), 
-    	.arr7(arr7), 
-    	.arr8(arr8), 
-    	.arr9(arr9), 
-    	.arr10(arr10), 
-    	.arr11(arr11), 
-		.bottom_flag(bottom_flag), 
-		.top_flag(top_flag), 
-		.x1(x1),
-		.y1(y1),
-		.x2(x2),
-		.y2(y2),
-		.x3(x3),
-		.y3(y3),
-		.x4(x4),
-		.y4(y4));
+		.Clk(game_clk), .Ack(Start_Ack), .Reset(Reset), .gen_flag(gen_flag), .SCEN_U(BtnU), 
+		.SCEN_D(BtnD), .SCEN_L(BtnL), .SCEN_R(BtnR), .arr0(arr0), .arr1(arr1), 
+		.arr2(arr2), .arr3(arr3), .arr4(arr4), .arr5(arr5), .arr6(arr6), .arr7(arr7), .arr8(arr8), 
+    	.arr9(arr9), .arr10(arr10), .arr11(arr11), .bottom_flag(bottom_flag), .top_flag(top_flag), 
+		.x1(x1), .y1(y1), .x2(x2), .y2(y2), .x3(x3), .y3(y3), .x4(x4), .y4(y4)
+	);
 
 	// assign QuadSpiFlashCS = 1'b1;
 

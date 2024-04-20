@@ -1,15 +1,15 @@
 // ----------------------------------------------------------------------
 //
 //  File name: game_array.v
-//  Ported to Nexys 4: 
+//  Ported to Nexys 4:
 //  Date: April 10, 2024 (changed 4-bit divider to 8-bit divider, added SCEN signle step control)
 // ------------------------------------------------------------------------
-module block_gen 
+module block_gen
 (
-    input Clk, 
-    input Ack, 
-    input Reset, 
-    input gen_flag, 
+    input Clk,
+    input Ack,
+    input Reset,
+    input gen_flag,
     input SCEN_U,
     input SCEN_D,
     input SCEN_L,
@@ -21,13 +21,13 @@ module block_gen
     input [9:0] arr4,
     input [9:0] arr5,
     input [9:0] arr6,
-    input [9:0] arr7, 
+    input [9:0] arr7,
     input [9:0] arr8,
     input [9:0] arr9,
     input [9:0] arr10,
     input [9:0] arr11,
-    output bottom_flag, 
-    output reg top_flag, 
+    output bottom_flag,
+    output reg top_flag,
     output reg [3:0] x1,
     output reg [3:0] y1,
     output reg [3:0] x2,
@@ -38,7 +38,7 @@ module block_gen
     output reg [3:0] y4,
     output reg [3:0] state,
     output q_blockgen,
-    output q_wait, 
+    output q_wait,
     output q_move,
     output q_ini);
 
@@ -48,14 +48,22 @@ reg [3:0] center_y;
 reg [1:0] clk_count;
 reg [9:0] arr [11:0];
 
-localparam
-BLOCKGEN = 4'b1000, MOVE = 4'b0100, WAIT = 4'b0010, INI = 4'b0001;
-integer L_LEFT = 0;
-integer L_RIGHT = 1;
-integer SQUARE = 2;
-integer LINE = 3;
-integer T = 4;
-integer shape;
+initial begin
+    $random(seed);  // seed with a value or with a time-based value like $time
+end
+
+localparam BLOCKGEN = 4'b1000, MOVE = 4'b0100, WAIT = 4'b0010, INI = 4'b0001;
+// integer L_LEFT = 0;
+// integer L_RIGHT = 1;
+// integer SQUARE = 2;
+// integer LINE = 3;
+// integer T = 4;
+
+reg [2:0] shape;
+initial begin
+    shape = $random % 5;
+end
+
 
 assign bottom_flag = (state == WAIT);
 
@@ -63,25 +71,25 @@ integer i;
 always @(*)
 begin
   for(i = 0; i < 10; i = i + 1)
-		begin
-        arr[0][i] <= arr0[i];
-        arr[1][i] <= arr1[i];
-        arr[2][i] <= arr2[i];
-        arr[3][i] <= arr3[i];
-        arr[4][i] <= arr4[i];
-        arr[5][i] <= arr5[i];
-        arr[6][i] <= arr6[i];
-        arr[7][i] <= arr7[i];
-        arr[8][i] <= arr8[i];
-        arr[9][i] <= arr9[i];
-        arr[10][i] <= arr10[i];
-        arr[11][i] <= arr11[i];
+    begin
+        arr[i][0] <= arr0[i];
+        arr[i][1] <= arr1[i];
+        arr[i][2] <= arr2[i];
+        arr[i][3] <= arr3[i];
+        arr[i][4] <= arr4[i];
+        arr[i][5] <= arr5[i];
+        arr[i][6] <= arr6[i];
+        arr[i][7] <= arr7[i];
+        arr[i][8] <= arr8[i];
+        arr[i][9] <= arr9[i];
+        arr[i][10] <= arr10[i];
+        arr[i][11] <= arr11[i];
     end
 end
 
-always @(posedge Clk, posedge Reset) 
+always @(posedge Clk, posedge Reset)
 
-  begin  
+  begin
     if (Reset)
        begin
             state <= INI;
@@ -93,7 +101,7 @@ always @(posedge Clk, posedge Reset)
        begin
          (* full_case, parallel_case *)
          case (state)
-            INI : 
+            INI :
               begin
                   // state transitions in the control unit
                   center_x <= 5;
@@ -107,22 +115,22 @@ always @(posedge Clk, posedge Reset)
 
               end
 
-            BLOCKGEN : 
+            BLOCKGEN :
               begin
                 state <= MOVE;
-
-                shape = $random % 5;
                 case (shape)
-                    L_LEFT: 
+                    0: // L_LEFT
                         {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd4, 4'd10, 4'd4, 4'd11, 4'd5, 4'd11, 4'd6, 4'd11};
-                    L_RIGHT:
+                    1: // L_RIGHT:
                         {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd4, 4'd11, 4'd5, 4'd11, 4'd6, 4'd11, 4'd6, 4'd10};
-                    SQUARE:
+                    2: //SQUARE:
                         {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd5, 4'd10, 4'd5, 4'd11, 4'd6, 4'd11, 4'd6, 4'd10};
-                    LINE:
+                    3: // LINE:
                         {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd4, 4'd11, 4'd5, 4'd11, 4'd6, 4'd11, 4'd7, 4'd11};
-                    T:
+                    4: // T:
                         {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd5, 4'd11, 4'd6, 4'd11, 4'd6, 4'd10, 4'd7, 4'd11};
+                    default: 
+                        {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd5, 4'd10, 4'd5, 4'd11, 4'd6, 4'd11, 4'd6, 4'd10};
                 endcase
               end
 
@@ -137,10 +145,10 @@ always @(posedge Clk, posedge Reset)
                         x2 <= center_x + y2 - center_y;
                         x3 <= center_x + y3 - center_y;
                         x4 <= center_x + y4 - center_y;
-                        x1 <= center_y + x1 - center_x;
-                        x2 <= center_y + x2 - center_x;
-                        x3 <= center_y + x3 - center_x;
-                        x4 <= center_y + x4 - center_x;
+                        y1 <= center_y + x1 - center_x;
+                        y2 <= center_y + x2 - center_x;
+                        y3 <= center_y + x3 - center_x;
+                        y4 <= center_y + x4 - center_x;
                     end
                 end
 
@@ -171,7 +179,7 @@ always @(posedge Clk, posedge Reset)
                 // if (SCEN_D) // drop
                 // begin
 
-                // end 
+                // end
 
                 clk_count <= clk_count + 1;
 
@@ -192,26 +200,32 @@ always @(posedge Clk, posedge Reset)
                                 top_flag <= 1;
                             state <= WAIT;
                         end
-                        y1 <= y1 - 1;
-                        y2 <= y2 - 1;
-                        y3 <= y3 - 1;
-                        y4 <= y4 - 1;
-                        center_y <= center_y - 1;
+                        else
+                        begin
+                          y1 <= y1 - 1;
+                          y2 <= y2 - 1;
+                          y3 <= y3 - 1;
+                          y4 <= y4 - 1;
+                          center_y <= center_y - 1;
+                        end
                     end
                 end
               end
 
             WAIT  :
-              begin  
+              begin
                   // state transitions in the control unit
                   if (Ack & top_flag)
                     state <= INI;
                   if (gen_flag)
+                  begin
                     state <= BLOCKGEN;
-              end    
-            
+                    shape <= $random % 5;
+                  end
+              end
+
       endcase
-    end 
+    end
   end
 
 endmodule  // divider_timing
