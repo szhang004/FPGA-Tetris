@@ -61,9 +61,8 @@ localparam BLOCKGEN = 4'b1000, MOVE = 4'b0100, WAIT = 4'b0010, INI = 4'b0001;
 
 reg [2:0] shape;
 initial begin
-    shape = $random % 5;
+     shape = $urandom();
 end
-
 
 assign bottom_flag = (state == WAIT);
 
@@ -96,6 +95,14 @@ always @(posedge Clk, posedge Reset)
             center_x <= 4'bXXXX;
             center_y <= 4'bXXXX;
             clk_count <= 2'bXX;
+            x1 <= 4'd0;
+            x2 <= 4'd0;
+            x3 <= 4'd0;
+            x4 <= 4'd0;
+            y1 <= 4'd0;
+            y2 <= 4'd0;
+            y3 <= 4'd0;
+            y4 <= 4'd0;
        end
     else
        begin
@@ -107,7 +114,7 @@ always @(posedge Clk, posedge Reset)
                   center_x <= 5;
                   center_y <= 11; // (5,11)
                   clk_count <= 0;
-
+                  shape <= $urandom_range(4,0);
                   top_flag <= 0;
 
                   if (gen_flag)
@@ -119,16 +126,16 @@ always @(posedge Clk, posedge Reset)
               begin
                 state <= MOVE;
                 case (shape)
-                    0: // L_LEFT
-                        {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd4, 4'd10, 4'd4, 4'd11, 4'd5, 4'd11, 4'd6, 4'd11};
-                    1: // L_RIGHT:
+                    3'd0: // L_LEFT
+                        {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd4, 4'd10, 4'd5, 4'd11, 4'd4, 4'd11, 4'd6, 4'd11};
+                    3'd1: // L_RIGHT:
                         {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd4, 4'd11, 4'd5, 4'd11, 4'd6, 4'd11, 4'd6, 4'd10};
-                    2: //SQUARE:
+                    3'd2: //SQUARE:
                         {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd5, 4'd10, 4'd5, 4'd11, 4'd6, 4'd11, 4'd6, 4'd10};
-                    3: // LINE:
+                    3'd3: // LINE:
                         {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd4, 4'd11, 4'd5, 4'd11, 4'd6, 4'd11, 4'd7, 4'd11};
-                    4: // T:
-                        {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd5, 4'd11, 4'd6, 4'd11, 4'd6, 4'd10, 4'd7, 4'd11};
+                    3'd4: // T:
+                        {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd6, 4'd11, 4'd5, 4'd11, 4'd6, 4'd10, 4'd7, 4'd11};
                     default: 
                         {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd5, 4'd10, 4'd5, 4'd11, 4'd6, 4'd11, 4'd6, 4'd10};
                 endcase
@@ -141,14 +148,40 @@ always @(posedge Clk, posedge Reset)
                 begin
                     if (center_x < 8 && center_x > 1)
                     begin
-                        x1 <= center_x + y1 - center_y;
-                        x2 <= center_x + y2 - center_y;
-                        x3 <= center_x + y3 - center_y;
-                        x4 <= center_x + y4 - center_y;
-                        y1 <= center_y + x1 - center_x;
-                        y2 <= center_y + x2 - center_x;
-                        y3 <= center_y + x3 - center_x;
-                        y4 <= center_y + x4 - center_x;
+                      if (center_y > y1)
+                        x1 <= center_x - (center_y - y1);
+                      else
+                        x1 <= center_x + (y1 - center_y);
+                      if (center_y > y2)
+                        x2 <= center_x - (center_y - y2);
+                      else
+                        x2 <= center_x + (y2 - center_y);
+                      if (center_y > y3)
+                        x3 <= center_x - (center_y - y3);
+                      else
+                        x3 <= center_x + (y3 - center_y);
+                      if (center_y > y1)
+                        x4 <= center_x - (center_y - y4);
+                      else
+                        x4 <= center_x + (y4 - center_y);
+
+                      if (center_x > x1)
+                        y1 <= center_y - (center_x - x1);
+                      else
+                        y1 <= center_y + (x1 - center_x);
+                      if (center_x > x2)
+                        y2 <= center_y - (center_x - x2);
+                      else
+                        y2 <= center_y + (x2 - center_x);
+                      if (center_x > x3)
+                        y3 <= center_y - (center_x - x3);
+                      else
+                        y3 <= center_y + (x3 - center_x);
+                      if (center_x > x4)
+                        y4 <= center_y - (center_x - x4);
+                      else
+                        y4 <= center_y + (x4 - center_x);
+                        
                     end
                 end
 
@@ -156,23 +189,29 @@ always @(posedge Clk, posedge Reset)
                 begin
                     if (x1 != 9 & x2 != 9 & x3 != 9 & x4 != 9)
                     begin
+                      if (!(arr[x1+1][y1] == 1 || arr[x2+1][y2] == 1 || arr[x3+1][y3] == 1 || arr[x4+1][y4] == 1))
+                      begin
                         x1 <= x1 + 1;
                         x2 <= x2 + 1;
                         x3 <= x3 + 1;
                         x4 <= x4 + 1;
                         center_x <= center_x + 1;
+                      end
                     end
                 end
 
                 if (SCEN_L)  // move left
                 begin
-                    if (x1 != 0 & x2 != 0 & x3 != 0 & x4 != 0)
+                    if (x1 != 0 & x2 != 0 & x3 != 0 & x4 != 0 )
                     begin
+                      if (!(arr[x1-1][y1] == 1 || arr[x2-1][y2] == 1 || arr[x3-1][y3] == 1 || arr[x4-1][y4] == 1))
+                      begin
                         x1 <= x1 - 1;
                         x2 <= x2 - 1;
                         x3 <= x3 - 1;
                         x4 <= x4 - 1;
                         center_x <= center_x - 1;
+                      end
                     end
                 end
 
@@ -220,7 +259,9 @@ always @(posedge Clk, posedge Reset)
                   if (gen_flag)
                   begin
                     state <= BLOCKGEN;
-                    shape <= $random % 5;
+                    shape = $urandom_range(4,0);
+                    center_x <= 5;
+                    center_y <= 11;
                   end
               end
 

@@ -95,22 +95,6 @@ module vga_top(
 	assign vgaG = rgb[7  : 4];
 	assign vgaB = rgb[3  : 0];
 
-	// ee354_debouncer #(.N_dc(28)) button_U 
-    //     (.CLK(ClkPort), .RESET(Reset), .PB(BtnU), .DPB( ), 
-	// 	.SCEN(BtnU_pulse), .MCEN( ), .CCEN( ));
-
-	// ee354_debouncer #(.N_dc(28)) button_D 
-    //     (.CLK(ClkPort), .RESET(Reset), .PB(BtnD), .DPB( ), 
-	// 	.SCEN(BtnD_pulse), .MCEN( ), .CCEN( ));
-	
-	// ee354_debouncer #(.N_dc(28)) button_L 
-    //     (.CLK(ClkPort), .RESET(Reset), .PB(BtnL), .DPB( ), 
-	// 	.SCEN(BtnL_pulse), .MCEN( ), .CCEN( ));
-
-	// ee354_debouncer #(.N_dc(28)) button_R
-    //     (.CLK(ClkPort), .RESET(Reset), .PB(BtnR), .DPB( ), 
-	// 	.SCEN(BtnR_pulse), .MCEN( ), .CCEN( ));
-
 	game_array game_space(
 		.Clk(game_clk), .Ack(Start_Ack), .Start(Start_Ack), .Reset(Reset), .bottom_flag(bottom_flag), 
 		.top_flag(top_flag), .x1(x1), .y1(y1), .x2(x2), .y2(y2), .x3(x3), .y3(y3), .x4(x4), .y4(y4), 
