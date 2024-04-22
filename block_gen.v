@@ -56,12 +56,23 @@ localparam BLOCKGEN = 4'b1000, MOVE = 4'b0100, WAIT = 4'b0010, INI = 4'b0001;
 // integer L_LEFT = 0;
 // integer L_RIGHT = 1;
 // integer SQUARE = 2;
-// integer LINE = 3;
-// integer T = 4;
+// integer T = 3;
+// integer LINE = 4;
 
 reg [2:0] shape;
-initial begin
-     shape = $urandom();
+reg [2:0] shape_hold;
+reg [15:0] lfsr_reg;
+
+always @(posedge Clk, posedge Reset) 
+begin
+    if (Reset) begin
+        lfsr_reg <= 16'b1; // Initialization from a non-zero value
+        shape <= 3'b0;
+    end 
+    else begin
+        lfsr_reg <= {lfsr_reg[14:0], lfsr_reg[15] ^ lfsr_reg[13] ^ lfsr_reg[12] ^ lfsr_reg[10]}; // Taps at 16, 14, 13, 11
+        shape <= lfsr_reg[2:0] % 5; // Scale down to 0-4 range
+    end
 end
 
 assign bottom_flag = (state == WAIT);
@@ -111,10 +122,9 @@ always @(posedge Clk, posedge Reset)
             INI :
               begin
                   // state transitions in the control unit
-                  center_x <= 5;
-                  center_y <= 11; // (5,11)
+                  // center_x <= 5;
+                  // center_y <= 11; // (5,11)
                   clk_count <= 0;
-                  shape <= $urandom_range(4,0);
                   top_flag <= 0;
 
                   if (gen_flag)
@@ -125,19 +135,44 @@ always @(posedge Clk, posedge Reset)
             BLOCKGEN :
               begin
                 state <= MOVE;
-                case (shape)
+                shape_hold <= shape;
+                case (shape % 5)
                     3'd0: // L_LEFT
-                        {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd4, 4'd10, 4'd5, 4'd11, 4'd4, 4'd11, 4'd6, 4'd11};
+                    begin
+                        {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd4, 4'd10, 4'd4, 4'd11, 4'd5, 4'd11, 4'd6, 4'd11};
+                        center_x <= 5;
+                        center_y <= 11;
+                    end
                     3'd1: // L_RIGHT:
+                    begin
                         {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd4, 4'd11, 4'd5, 4'd11, 4'd6, 4'd11, 4'd6, 4'd10};
+                        center_x <= 5;
+                        center_y <= 11;
+                    end
                     3'd2: //SQUARE:
+                    begin
                         {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd5, 4'd10, 4'd5, 4'd11, 4'd6, 4'd11, 4'd6, 4'd10};
-                    3'd3: // LINE:
+                        center_x <= 5;
+                        center_y <= 11;
+                    end
+                    3'd4: // LINE:
+                    begin
                         {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd4, 4'd11, 4'd5, 4'd11, 4'd6, 4'd11, 4'd7, 4'd11};
-                    3'd4: // T:
+                        center_x <= 5;
+                        center_y <= 11;
+                    end
+                    3'd3: // T:
+                    begin
                         {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd6, 4'd11, 4'd5, 4'd11, 4'd6, 4'd10, 4'd7, 4'd11};
+                        center_x <= 6;
+                        center_y <= 11;
+                    end
                     default: 
+                    begin
                         {x1, y1, x2, y2, x3, y3, x4, y4} <= {4'd5, 4'd10, 4'd5, 4'd11, 4'd6, 4'd11, 4'd6, 4'd10};
+                        center_x <= 5;
+                        center_y <= 11;
+                    end
                 endcase
               end
 
@@ -146,47 +181,61 @@ always @(posedge Clk, posedge Reset)
 
                 if (SCEN_U) // rotate
                 begin
-                    if (center_x < 8 && center_x > 1)
+                  if (arr[x1][y1-1] == 1 || arr[x2][y2-1] == 1 || arr[x3][y3-1] == 1 || arr[x4][y4-1] == 1)
+                  begin
+                      if (y1 == 11 || y2 == 11 || y3 == 11 || y4 == 11)
+                          top_flag <= 1;
+                      state <= WAIT;
+                  end
+                  else begin
+                    if (center_x < 8 && center_x > 1 && center_y > 1 && center_y < 10 && shape_hold != 3'd2)
                     begin
-                      if (center_y > y1)
+                      if (center_y >= y1)
                         x1 <= center_x - (center_y - y1);
                       else
                         x1 <= center_x + (y1 - center_y);
-                      if (center_y > y2)
+                      if (center_y >= y2)
                         x2 <= center_x - (center_y - y2);
                       else
                         x2 <= center_x + (y2 - center_y);
-                      if (center_y > y3)
+                      if (center_y >= y3)
                         x3 <= center_x - (center_y - y3);
                       else
                         x3 <= center_x + (y3 - center_y);
-                      if (center_y > y1)
+                      if (center_y >= y4)
                         x4 <= center_x - (center_y - y4);
                       else
                         x4 <= center_x + (y4 - center_y);
 
-                      if (center_x > x1)
-                        y1 <= center_y - (center_x - x1);
+                      if (center_x >= x1)
+                        y1 <= center_y + (center_x - x1);
                       else
-                        y1 <= center_y + (x1 - center_x);
-                      if (center_x > x2)
-                        y2 <= center_y - (center_x - x2);
+                        y1 <= center_y - (x1 - center_x);
+                      if (center_x >= x2)
+                        y2 <= center_y + (center_x - x2);
                       else
-                        y2 <= center_y + (x2 - center_x);
-                      if (center_x > x3)
-                        y3 <= center_y - (center_x - x3);
+                        y2 <= center_y - (x2 - center_x);
+                      if (center_x >= x3)
+                        y3 <= center_y + (center_x - x3);
                       else
-                        y3 <= center_y + (x3 - center_x);
-                      if (center_x > x4)
-                        y4 <= center_y - (center_x - x4);
+                        y3 <= center_y - (x3 - center_x);
+                      if (center_x >= x4)
+                        y4 <= center_y + (center_x - x4);
                       else
-                        y4 <= center_y + (x4 - center_x);
-                        
+                        y4 <= center_y - (x4 - center_x);
                     end
+                  end
                 end
 
                 if (SCEN_R)  // move right
                 begin
+                  if (arr[x1][y1-1] == 1 || arr[x2][y2-1] == 1 || arr[x3][y3-1] == 1 || arr[x4][y4-1] == 1)
+                  begin
+                      if (y1 == 11 || y2 == 11 || y3 == 11 || y4 == 11)
+                          top_flag <= 1;
+                      state <= WAIT;
+                  end
+                  else begin
                     if (x1 != 9 & x2 != 9 & x3 != 9 & x4 != 9)
                     begin
                       if (!(arr[x1+1][y1] == 1 || arr[x2+1][y2] == 1 || arr[x3+1][y3] == 1 || arr[x4+1][y4] == 1))
@@ -198,10 +247,18 @@ always @(posedge Clk, posedge Reset)
                         center_x <= center_x + 1;
                       end
                     end
+                  end
                 end
 
                 if (SCEN_L)  // move left
                 begin
+                  if (arr[x1][y1-1] == 1 || arr[x2][y2-1] == 1 || arr[x3][y3-1] == 1 || arr[x4][y4-1] == 1)
+                  begin
+                      if (y1 == 11 || y2 == 11 || y3 == 11 || y4 == 11)
+                          top_flag <= 1;
+                      state <= WAIT;
+                  end
+                  else begin
                     if (x1 != 0 & x2 != 0 & x3 != 0 & x4 != 0 )
                     begin
                       if (!(arr[x1-1][y1] == 1 || arr[x2-1][y2] == 1 || arr[x3-1][y3] == 1 || arr[x4-1][y4] == 1))
@@ -213,12 +270,26 @@ always @(posedge Clk, posedge Reset)
                         center_x <= center_x - 1;
                       end
                     end
+                  end
                 end
 
-                // if (SCEN_D) // drop
-                // begin
-
-                // end
+                if (SCEN_D) // drop
+                begin
+                  if (arr[x1][y1-1] == 1 || arr[x2][y2-1] == 1 || arr[x3][y3-1] == 1 || arr[x4][y4-1] || y1 == 0 || y2 == 0 || y3 == 0 | y4 == 0)
+                  begin
+                      if (y1 == 11 || y2 == 11 || y3 == 11 || y4 == 11)
+                          top_flag <= 1;
+                      state <= WAIT;
+                  end
+                  else
+                  begin
+                      y1 <= y1 - 1;
+                      y2 <= y2 - 1;
+                      y3 <= y3 - 1;
+                      y4 <= y4 - 1;
+                      center_y <= center_y - 1;
+                  end
+                end
 
                 clk_count <= clk_count + 1;
 
@@ -241,6 +312,10 @@ always @(posedge Clk, posedge Reset)
                         end
                         else
                         begin
+                          x1 <= x1;
+                          x2 <= x2;
+                          x3 <= x3;
+                          x4 <= x4;
                           y1 <= y1 - 1;
                           y2 <= y2 - 1;
                           y3 <= y3 - 1;
@@ -259,7 +334,6 @@ always @(posedge Clk, posedge Reset)
                   if (gen_flag)
                   begin
                     state <= BLOCKGEN;
-                    shape = $urandom_range(4,0);
                     center_x <= 5;
                     center_y <= 11;
                   end

@@ -162,8 +162,8 @@ set_property PACKAGE_PIN E3 [get_ports ClkPort]
 # 	set_property IOSTANDARD LVCMOS33 [get_ports {Cg}]
 
 #Bank = 34, Pin name = IO_L16P_T2_34,						Sch name = Dp
-set_property PACKAGE_PIN M4 [get_ports Dp]							
-	set_property IOSTANDARD LVCMOS33 [get_ports Dp]
+# set_property PACKAGE_PIN M4 [get_ports Dp]							
+# 	set_property IOSTANDARD LVCMOS33 [get_ports Dp]
 
 # #Bank = 34, Pin name = IO_L18N_T2_34,						Sch name = An0
 # set_property PACKAGE_PIN N6 [get_ports {An0}]					
@@ -209,8 +209,8 @@ set_property PACKAGE_PIN T16 [get_ports BtnL]
 set_property PACKAGE_PIN R10 [get_ports BtnR]						
 	set_property IOSTANDARD LVCMOS33 [get_ports BtnR]
 # Bank = 14, Pin name = IO_L21P_T3_DQS_14,					Sch name = BTND
-# set_property PACKAGE_PIN V10 [get_ports BtnD]						
-# 	set_property IOSTANDARD LVCMOS33 [get_ports BtnD]
+set_property PACKAGE_PIN V10 [get_ports BtnD]						
+	set_property IOSTANDARD LVCMOS33 [get_ports BtnD]
  
 
 

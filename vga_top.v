@@ -65,7 +65,7 @@ module vga_top(
 
 	wire Start_Ack;
 	// wire BtnR_pulse, BtnL_pulse, BtnD_pulse, BtnU_pulse;
-	wire bottom_flag, top_flag, gen_flag, move, clear; 
+	wire bottom_flag, top_flag, gen_flag, move, clear, lost; 
 	assign Reset = BtnC;
 	assign Start_Ack = BtnU;
 
@@ -89,7 +89,7 @@ module vga_top(
 		.Clk(ClkPort), .hCount(hc), .vCount(vc), .rgb(rgb), .gen(gen_flag), .move(move), .clear(clear),
 		.arr0(arr0), .arr1(arr1), .arr2(arr2), .arr3(arr3), .arr4(arr4), .arr5(arr5), .arr6(arr6), 
     	.arr7(arr7), .arr8(arr8), .arr9(arr9), .arr10(arr10), .arr11(arr11), .bright(bright), 
-		.x1(x1), .y1(y1), .x2(x2), .y2(y2), .x3(x3), .y3(y3), .x4(x4), .y4(y4));  
+		.x1(x1), .y1(y1), .x2(x2), .y2(y2), .x3(x3), .y3(y3), .x4(x4), .y4(y4), .lost(lost));  
 
 	assign vgaR = rgb[11 : 8];
 	assign vgaG = rgb[7  : 4];
@@ -100,7 +100,7 @@ module vga_top(
 		.top_flag(top_flag), .x1(x1), .y1(y1), .x2(x2), .y2(y2), .x3(x3), .y3(y3), .x4(x4), .y4(y4), 
 		.arr0(arr0), .arr1(arr1), .arr2(arr2), .arr3(arr3), .arr4(arr4), .arr5(arr5), .arr6(arr6), 
     	.arr7(arr7), .arr8(arr8), .arr9(arr9), .arr10(arr10), .arr11(arr11), .gen_flag(gen_flag), 
-		.score(score), .q_move(move), .q_clear(clear)
+		.score(score), .q_move(move), .q_clear(clear), .q_lost(lost)
 	);
 
 	block_gen block(
