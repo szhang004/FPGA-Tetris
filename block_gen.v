@@ -45,7 +45,7 @@ module block_gen
 assign {q_blockgen, q_move, q_wait, q_ini} = state;
 reg [3:0] center_x;
 reg [3:0] center_y;
-reg [1:0] clk_count;
+reg [2:0] clk_count;
 reg [9:0] arr [11:0];
 
 initial begin
@@ -75,7 +75,7 @@ begin
     end
 end
 
-assign bottom_flag = (state == WAIT);
+assign bottom_flag = (state == WAIT || (top_flag));
 
 integer i;
 always @(*)
@@ -106,14 +106,14 @@ always @(posedge Clk, posedge Reset)
             center_x <= 4'bXXXX;
             center_y <= 4'bXXXX;
             clk_count <= 2'bXX;
-            x1 <= 4'd0;
-            x2 <= 4'd0;
-            x3 <= 4'd0;
-            x4 <= 4'd0;
-            y1 <= 4'd0;
-            y2 <= 4'd0;
-            y3 <= 4'd0;
-            y4 <= 4'd0;
+            x1 <= 4'd13;
+            x2 <= 4'd13;
+            x3 <= 4'd13;
+            x4 <= 4'd13;
+            y1 <= 4'd13;
+            y2 <= 4'd13;
+            y3 <= 4'd13;
+            y4 <= 4'd13;
        end
     else
        begin
@@ -179,7 +179,7 @@ always @(posedge Clk, posedge Reset)
             MOVE :
               begin
 
-                if (SCEN_U) // rotate
+                if (SCEN_U && (clk_count[1] == 0)) // rotate
                 begin
                   if (arr[x1][y1-1] == 1 || arr[x2][y2-1] == 1 || arr[x3][y3-1] == 1 || arr[x4][y4-1] == 1)
                   begin
@@ -188,7 +188,9 @@ always @(posedge Clk, posedge Reset)
                       state <= WAIT;
                   end
                   else begin
-                    if (center_x < 8 && center_x > 1 && center_y > 1 && center_y < 10 && shape_hold != 3'd2)
+                    if (((center_x < 9 && center_x > 0 && center_y > 0 && center_y < 11 && shape_hold != 3'd4 && shape_hold != 3'd1) || 
+                        (center_x < 8 && center_x > 1 && center_y > 1 && center_y < 10 && shape_hold == 3'd4) || 
+                        (center_x < 8 && center_x > 0 && center_y > 0 && center_y < 11 && shape_hold == 3'd1)) && shape_hold != 3'd2)
                     begin
                       if (center_y >= y1)
                         x1 <= center_x - (center_y - y1);
@@ -227,7 +229,7 @@ always @(posedge Clk, posedge Reset)
                   end
                 end
 
-                if (SCEN_R)  // move right
+                else if (SCEN_R  && clk_count[1] == 1)  // move right
                 begin
                   if (arr[x1][y1-1] == 1 || arr[x2][y2-1] == 1 || arr[x3][y3-1] == 1 || arr[x4][y4-1] == 1)
                   begin
@@ -250,7 +252,7 @@ always @(posedge Clk, posedge Reset)
                   end
                 end
 
-                if (SCEN_L)  // move left
+                else if (SCEN_L  && clk_count[1] == 1)  // move left
                 begin
                   if (arr[x1][y1-1] == 1 || arr[x2][y2-1] == 1 || arr[x3][y3-1] == 1 || arr[x4][y4-1] == 1)
                   begin
@@ -273,9 +275,9 @@ always @(posedge Clk, posedge Reset)
                   end
                 end
 
-                if (SCEN_D) // drop
+                else if (SCEN_D && clk_count[1] == 0) // drop
                 begin
-                  if (arr[x1][y1-1] == 1 || arr[x2][y2-1] == 1 || arr[x3][y3-1] == 1 || arr[x4][y4-1] || y1 == 0 || y2 == 0 || y3 == 0 | y4 == 0)
+                  if (arr[x1][y1-1] == 1 || arr[x2][y2-1] == 1 || arr[x3][y3-1] == 1 || arr[x4][y4-1] == 1 || y1 == 0 || y2 == 0 || y3 == 0 | y4 == 0)
                   begin
                       if (y1 == 11 || y2 == 11 || y3 == 11 || y4 == 11)
                           top_flag <= 1;
@@ -293,13 +295,11 @@ always @(posedge Clk, posedge Reset)
 
                 clk_count <= clk_count + 1;
 
-                if (clk_count == 3)
+                if (clk_count == 7)
                 begin
                     clk_count = 0;
                     if (y1 == 0 || y2 == 0 || y3 == 0 || y4 == 0)
                     begin
-                        if (y1 == 11 || y2 == 11 || y3 == 11 || y4 == 11)
-                            top_flag <= 1;
                         state <= WAIT;
                     end
                     else

@@ -30,8 +30,8 @@ module vga_top(
 	output [3:0] vgaR, vgaG, vgaB,
 	
 	// //SSG signal 
-	// output An0, An1, An2, An3, An4, An5, An6, An7,
-	// output Ca, Cb, Cc, Cd, Ce, Cf, Cg, Dp,
+	output An0, An1, An2, An3, An4, An5, An6, An7,
+	output Ca, Cb, Cc, Cd, Ce, Cf, Cg, Dp,
 	
 	output MemOE, MemWR, RamCS, QuadSpiFlashCS
 	);
@@ -52,7 +52,7 @@ module vga_top(
 		DIV_CLK <= DIV_CLK + 1'b1;
 	end
 
-	assign game_clk = DIV_CLK[23];
+	assign game_clk = DIV_CLK[22];
 
 
 	// disable mamory ports
@@ -60,8 +60,10 @@ module vga_top(
 
 	wire bright;
 	wire[9:0] hc, vc;
-	wire[15:0] score;	
 	wire [11:0] rgb;
+	wire[15:0] score;
+	wire [6:0] ssdOut;
+	wire [3:0] anode;
 
 	wire Start_Ack;
 	// wire BtnR_pulse, BtnL_pulse, BtnD_pulse, BtnU_pulse;
@@ -82,6 +84,12 @@ module vga_top(
 	wire [9:0] arr9;
 	wire [9:0] arr10;
 	wire [9:0] arr11;
+
+	counter cnt(.clk(ClkPort), .displayNumber(score), .anode(anode), .ssdOut(ssdOut));
+	
+	assign Dp = 1;
+	assign {Ca, Cb, Cc, Cd, Ce, Cf, Cg} = ssdOut[6 : 0];
+    assign {An7, An6, An5, An4, An3, An2, An1, An0} = {4'b1111, anode};
 
 	display_controller dc(.clk(ClkPort), .hSync(hSync), .vSync(vSync), .bright(bright), .hCount(hc), .vCount(vc));
 	
